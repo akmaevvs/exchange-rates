@@ -3,7 +3,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import store from './store'
 import axios from 'axios'
-import './css/tailwind.css'
+import './css/tailwind.scss'
 
 
 let app;

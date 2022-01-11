@@ -1,99 +1,231 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 // import axios from 'axios'
 
 export default createStore({
   state: {
     actualDate: null,
     valute: null,
-    selectedValutesHave: [{
-      CharCode: "RUR",
-      active: true
+    selectedValutesHave: {
+      RUR: {
+        CharCode: "RUR",
+        active: true,
+      },
+      USD: {
+        CharCode: "USD",
+        active: false,
+      },
+      EUR: {
+        CharCode: "EUR",
+        active: false,
+      },
+      GBP: {
+        CharCode: "GBP",
+        active: false,
+      },
     },
-    {
-      CharCode: "USD",
-      active: false,
-    }, {
-      CharCode: "EUR",
-      active: false,
-    }, {
-      CharCode: "GBR",
-      active: false,
-    }],
-    selectedValutesWant: [{
-      CharCode: "RUR",
-      active: false
+    selectedValutesWant: {
+      RUR: {
+        CharCode: "RUR",
+        active: false,
+      },
+      USD: {
+        CharCode: "USD",
+        active: true,
+      },
+      EUR: {
+        CharCode: "EUR",
+        active: false,
+      },
+      GBP: {
+        CharCode: "GBP",
+        active: false,
+      },
     },
-    {
-      CharCode: "USD",
-      active: true,
-    }, {
-      CharCode: "EUR",
-      active: false,
-    }, {
-      CharCode: "GBR",
-      active: false,
-    }],
   },
   getters: {
-    selectedValutesHave: state => {
-      return state.selectedValutesHave
+    selectedValutesHave: (state) => {
+      return state.selectedValutesHave;
     },
-    selectedValutesWant: state => {
-      return state.selectedValutesWant
+    selectedValutesWant: (state) => {
+      return state.selectedValutesWant;
     },
-    activeHave: state => {
-      let activeHave;
-      state.selectedValutesHave.filter(item => {
-        if (item.active) {
-          activeHave = item
+    activeHave: (state) => {
+      // let activeHave;
+      for (const key in state.selectedValutesHave) {
+        if (Object.hasOwnProperty.call(state.selectedValutesHave, key)) {
+          const element = state.selectedValutesHave[key];
+          if (element.active) {
+            return element;
+          }
         }
-      })
+      }
+      // state.selectedValutesHave.filter((item) => {
+      //   if (item.active) {
+      //     activeHave = item;
+      //   }
+      // });
 
-      return activeHave
+      // return activeHave;
     },
-    activeWant: state => {
-      let activeWant;
-      state.selectedValutesWant.filter(item => {
-        if (item.active) {
-          activeWant = item
+    activeWant: (state) => {
+      // let activeWant;
+      for (const key in state.selectedValutesWant) {
+        if (Object.hasOwnProperty.call(state.selectedValutesWant, key)) {
+          const element = state.selectedValutesWant[key];
+          if (element.active) {
+            return element;
+          }
         }
-      })
+      }
+      // state.selectedValutesWant.filter((item) => {
+      //   if (item.active) {
+      //     activeWant = item;
+      //   }
+      // });
 
-      return activeWant
+      // return activeWant;
     },
-    valutesFull: state => {
-      return state.valute
-    }
+    valutesFull: (state) => {
+      return state.valute;
+    },
   },
   mutations: {
     SET_DATE: (state, payload) => {
       console.log("mutation", payload);
-      state.actualDate = payload
+      state.actualDate = payload;
     },
     SET_RATES: (state, data) => {
       console.log("mutation", data);
-      state.valute = Object.values(data.Valute)
-      state.actualDate = data.Date
+      state.valute = data.Valute;
+      state.actualDate = data.Date;
     },
     SET_ACTIVE_HAVE: (state, CharCode) => {
-      state.selectedValutesHave = state.selectedValutesHave.filter(item => {
-        item.active = false
-        if (item.CharCode == CharCode) {
-          item.active = true
+      for (const key in state.selectedValutesHave) {
+        if (Object.hasOwnProperty.call(state.selectedValutesHave, key)) {
+          state.selectedValutesHave[key].active = false;
+          // if (element.active) {
+          //   return element
+          // }
         }
+      }
+      state.selectedValutesHave[CharCode].active = true;
+      // state.selectedValutesHave = state.selectedValutesHave.filter((item) => {
+      //   item.active = false;
+      //   if (item.CharCode == CharCode) {
+      //     item.active = true;
+      //   }
 
-        return item
-      })
+      //   return item;
+      // });
+    },
+    SET_ACTIVE_HAVE_NEW: (state, CharCode) => {
+      for (const key in state.selectedValutesHave) {
+        if (Object.hasOwnProperty.call(state.selectedValutesHave, key)) {
+          state.selectedValutesHave[key].active = false;
+          // if (element.active) {
+          //   return element
+          // }
+        }
+      }
+      if (!(CharCode in state.selectedValutesHave)) {
+        delete state.selectedValutesHave[
+          Object.keys(state.selectedValutesHave)[
+            Object.keys(state.selectedValutesHave).length - 1
+          ]
+        ];
+        state.selectedValutesHave[CharCode] = {
+          CharCode,
+          active: true,
+        };
+      } else {
+        state.selectedValutesHave[CharCode].active = true;
+      }
+      // state.selectedValutesHave[Object.keys(state.selectedValutesHave)[Object.keys(state.selectedValutesHave).length - 1]] = new Object(`${CharCode}`: {
+      //   CharCode,
+      //   active: true
+      // })
+      console.log(
+        state.selectedValutesHave[
+          Object.keys(state.selectedValutesHave)[
+            Object.keys(state.selectedValutesHave).length - 1
+          ]
+        ]
+      );
+      console.log(state.selectedValutesHave);
+      console.log(CharCode);
+      // Object.entries(state.valute).filter((item) => {
+      //   // console.log(item);
+      //   // item.active = false
+      //   if (item[1].CharCode == CharCode) {
+      //     // item.active = true
+      //     state.selectedValutesHave.pop();
+      //     state.selectedValutesHave.push({ CharCode, active: false });
+
+      //     console.log(item[1]);
+      //   }
+
+      //   // return item
+      // });
     },
     SET_ACTIVE_WANT: (state, CharCode) => {
-      state.selectedValutesWant = state.selectedValutesWant.filter(item => {
-        item.active = false
-        if (item.CharCode == CharCode) {
-          item.active = true
+      for (const key in state.selectedValutesWant) {
+        if (Object.hasOwnProperty.call(state.selectedValutesWant, key)) {
+          state.selectedValutesWant[key].active = false;
+          // if (element.active) {
+          //   return element
+          // }
         }
+      }
+      state.selectedValutesWant[CharCode].active = true;
+    },
+    SET_ACTIVE_WANT_NEW: (state, CharCode) => {
+      for (const key in state.selectedValutesWant) {
+        if (Object.hasOwnProperty.call(state.selectedValutesWant, key)) {
+          state.selectedValutesWant[key].active = false;
+          // if (element.active) {
+          //   return element
+          // }
+        }
+      }
+      if (!(CharCode in state.selectedValutesWant)) {
+        delete state.selectedValutesWant[
+          Object.keys(state.selectedValutesWant)[
+            Object.keys(state.selectedValutesWant).length - 1
+          ]
+        ];
+        state.selectedValutesWant[CharCode] = {
+          CharCode,
+          active: true,
+        };
+      } else {
+        state.selectedValutesWant[CharCode].active = true;
+      }
+      // state.selectedValutesHave[Object.keys(state.selectedValutesHave)[Object.keys(state.selectedValutesHave).length - 1]] = new Object(`${CharCode}`: {
+      //   CharCode,
+      //   active: true
+      // })
+      // console.log(
+      //   state.selectedValutesHave[
+      //     Object.keys(state.selectedValutesHave)[
+      //       Object.keys(state.selectedValutesHave).length - 1
+      //     ]
+      //   ]
+      // );
+      // console.log(state.selectedValutesHave);
+      // console.log(CharCode);
+      // Object.entries(state.valute).filter((item) => {
+      //   // console.log(item);
+      //   // item.active = false
+      //   if (item[1].CharCode == CharCode) {
+      //     // item.active = true
+      //     state.selectedValutesHave.pop();
+      //     state.selectedValutesHave.push({ CharCode, active: false });
 
-        return item
-      })
+      //     console.log(item[1]);
+      //   }
+
+      //   // return item
+      // });
     },
   },
   actions: {
@@ -102,12 +234,18 @@ export default createStore({
       context.commit("SET_DATE", payload);
     },
     SET_ACTIVE_HAVE: (context, CharCode) => {
-      context.commit("SET_ACTIVE_HAVE", CharCode)
+      context.commit("SET_ACTIVE_HAVE", CharCode);
+    },
+    SET_ACTIVE_HAVE_NEW: (context, CharCode) => {
+      context.commit("SET_ACTIVE_HAVE_NEW", CharCode);
     },
     SET_ACTIVE_WANT: (context, CharCode) => {
-      context.commit("SET_ACTIVE_WANT", CharCode)
+      context.commit("SET_ACTIVE_WANT", CharCode);
     },
-    SET_RATES: async (context) => {
+    SET_ACTIVE_WANT_NEW: (context, CharCode) => {
+      context.commit("SET_ACTIVE_WANT_NEW", CharCode);
+    },
+    SET_RATES: async(context) => {
       // const data = await axios
       // .get(`https://www.cbr-xml-daily.ru/daily_json.js`)
       // .then(result => {
@@ -139,7 +277,7 @@ export default createStore({
             Nominal: 1,
             Name: "Австралийский доллар",
             Value: 53.982,
-            Previous: 53.9141
+            Previous: 53.9141,
           },
           AZN: {
             ID: "R01020A",
@@ -148,7 +286,7 @@ export default createStore({
             Nominal: 1,
             Name: "Азербайджанский манат",
             Value: 44.221,
-            Previous: 43.7273
+            Previous: 43.7273,
           },
           GBP: {
             ID: "R01035",
@@ -157,7 +295,7 @@ export default createStore({
             Nominal: 1,
             Name: "Фунт стерлингов Соединенного королевства",
             Value: 102.0436,
-            Previous: 100.0573
+            Previous: 100.0573,
           },
           AMD: {
             ID: "R01060",
@@ -166,7 +304,7 @@ export default createStore({
             Nominal: 100,
             Name: "Армянских драмов",
             Value: 15.5311,
-            Previous: 15.5164
+            Previous: 15.5164,
           },
           BYN: {
             ID: "R01090B",
@@ -175,7 +313,7 @@ export default createStore({
             Nominal: 1,
             Name: "Белорусский рубль",
             Value: 29.1038,
-            Previous: 29.1458
+            Previous: 29.1458,
           },
           BGN: {
             ID: "R01100",
@@ -184,7 +322,7 @@ export default createStore({
             Nominal: 1,
             Name: "Болгарский лев",
             Value: 43.5066,
-            Previous: 42.9487
+            Previous: 42.9487,
           },
           BRL: {
             ID: "R01115",
@@ -193,7 +331,7 @@ export default createStore({
             Nominal: 1,
             Name: "Бразильский реал",
             Value: 13.3354,
-            Previous: 13.0253
+            Previous: 13.0253,
           },
           HUF: {
             ID: "R01135",
@@ -202,7 +340,7 @@ export default createStore({
             Nominal: 100,
             Name: "Венгерских форинтов",
             Value: 23.7608,
-            Previous: 22.7476
+            Previous: 22.7476,
           },
           HKD: {
             ID: "R01200",
@@ -211,7 +349,7 @@ export default createStore({
             Nominal: 10,
             Name: "Гонконгских долларов",
             Value: 96.3595,
-            Previous: 95.264
+            Previous: 95.264,
           },
           DKK: {
             ID: "R01215",
@@ -220,7 +358,7 @@ export default createStore({
             Nominal: 1,
             Name: "Датская крона",
             Value: 11.4399,
-            Previous: 11.2956
+            Previous: 11.2956,
           },
           USD: {
             ID: "R01235",
@@ -229,7 +367,7 @@ export default createStore({
             Nominal: 1,
             Name: "Доллар США",
             Value: 75.1315,
-            Previous: 74.2926
+            Previous: 74.2926,
           },
           EUR: {
             ID: "R01239",
@@ -238,7 +376,7 @@ export default createStore({
             Nominal: 1,
             Name: "Евро",
             Value: 85.1315,
-            Previous: 84.0695
+            Previous: 84.0695,
           },
           INR: {
             ID: "R01270",
@@ -247,7 +385,7 @@ export default createStore({
             Nominal: 10,
             Name: "Индийских рупий",
             Value: 10.131,
-            Previous: 99.8422
+            Previous: 99.8422,
           },
           KZT: {
             ID: "R01335",
@@ -256,7 +394,7 @@ export default createStore({
             Nominal: 100,
             Name: "Казахстанских тенге",
             Value: 17.2328,
-            Previous: 16.9
+            Previous: 16.9,
           },
           CAD: {
             ID: "R01350",
@@ -265,7 +403,7 @@ export default createStore({
             Nominal: 1,
             Name: "Канадский доллар",
             Value: 59.4536,
-            Previous: 58.023
+            Previous: 58.023,
           },
           KGS: {
             ID: "R01370",
@@ -274,7 +412,7 @@ export default createStore({
             Nominal: 100,
             Name: "Киргизских сомов",
             Value: 88.5701,
-            Previous: 87.5906
+            Previous: 87.5906,
           },
           CNY: {
             ID: "R01375",
@@ -283,7 +421,7 @@ export default createStore({
             Nominal: 1,
             Name: "Китайский юань",
             Value: 11.7907,
-            Previous: 11.6503
+            Previous: 11.6503,
           },
           MDL: {
             ID: "R01500",
@@ -292,7 +430,7 @@ export default createStore({
             Nominal: 10,
             Name: "Молдавских леев",
             Value: 41.9378,
-            Previous: 41.855
+            Previous: 41.855,
           },
           NOK: {
             ID: "R01535",
@@ -301,7 +439,7 @@ export default createStore({
             Nominal: 10,
             Name: "Норвежских крон",
             Value: 84.95,
-            Previous: 84.2568
+            Previous: 84.2568,
           },
           PLN: {
             ID: "R01565",
@@ -310,7 +448,7 @@ export default createStore({
             Nominal: 1,
             Name: "Польский злотый",
             Value: 18.7276,
-            Previous: 18.296
+            Previous: 18.296,
           },
           RON: {
             ID: "R01585F",
@@ -319,7 +457,7 @@ export default createStore({
             Nominal: 1,
             Name: "Румынский лей",
             Value: 17.2099,
-            Previous: 16.9719
+            Previous: 16.9719,
           },
           XDR: {
             ID: "R01589",
@@ -328,7 +466,7 @@ export default createStore({
             Nominal: 1,
             Name: "СДР (специальные права заимствования)",
             Value: 105.0474,
-            Previous: 103.9792
+            Previous: 103.9792,
           },
           SGD: {
             ID: "R01625",
@@ -337,7 +475,7 @@ export default createStore({
             Nominal: 1,
             Name: "Сингапурский доллар",
             Value: 55.4231,
-            Previous: 54.8852
+            Previous: 54.8852,
           },
           TJS: {
             ID: "R01670",
@@ -346,7 +484,7 @@ export default createStore({
             Nominal: 10,
             Name: "Таджикских сомони",
             Value: 66.5175,
-            Previous: 65.8039
+            Previous: 65.8039,
           },
           TRY: {
             ID: "R01700J",
@@ -355,7 +493,7 @@ export default createStore({
             Nominal: 10,
             Name: "Турецких лир",
             Value: 54.3317,
-            Previous: 57.8432
+            Previous: 57.8432,
           },
           TMT: {
             ID: "R01710A",
@@ -364,7 +502,7 @@ export default createStore({
             Nominal: 1,
             Name: "Новый туркменский манат",
             Value: 21.4969,
-            Previous: 21.2568
+            Previous: 21.2568,
           },
           UZS: {
             ID: "R01717",
@@ -373,7 +511,7 @@ export default createStore({
             Nominal: 10000,
             Name: "Узбекских сумов",
             Value: 69.4501,
-            Previous: 68.5504
+            Previous: 68.5504,
           },
           UAH: {
             ID: "R01720",
@@ -382,7 +520,7 @@ export default createStore({
             Nominal: 10,
             Name: "Украинских гривен",
             Value: 27.3005,
-            Previous: 27.2584
+            Previous: 27.2584,
           },
           CZK: {
             ID: "R01760",
@@ -391,7 +529,7 @@ export default createStore({
             Nominal: 10,
             Name: "Чешских крон",
             Value: 34.8784,
-            Previous: 33.7234
+            Previous: 33.7234,
           },
           SEK: {
             ID: "R01770",
@@ -400,7 +538,7 @@ export default createStore({
             Nominal: 10,
             Name: "Шведских крон",
             Value: 82.6338,
-            Previous: 82.1512
+            Previous: 82.1512,
           },
           CHF: {
             ID: "R01775",
@@ -409,7 +547,7 @@ export default createStore({
             Nominal: 1,
             Name: "Швейцарский франк",
             Value: 81.5583,
-            Previous: 80.9376
+            Previous: 80.9376,
           },
           ZAR: {
             ID: "R01810",
@@ -418,7 +556,7 @@ export default createStore({
             Nominal: 10,
             Name: "Южноафриканских рэндов",
             Value: 47.9712,
-            Previous: 46.4948
+            Previous: 46.4948,
           },
           KRW: {
             ID: "R01815",
@@ -427,7 +565,7 @@ export default createStore({
             Nominal: 1000,
             Name: "Вон Республики Корея",
             Value: 62.7222,
-            Previous: 62.4483
+            Previous: 62.4483,
           },
           JPY: {
             ID: "R01820",
@@ -436,12 +574,22 @@ export default createStore({
             Nominal: 100,
             Name: "Японских иен",
             Value: 64.9168,
-            Previous: 64.5097
-          }
-        }
-      }
+            Previous: 64.5097,
+          },
+        },
+      };
+      data.Valute["RUR"] = {
+        ID: "RUR",
+        NumCode: "000",
+        CharCode: "RUR",
+        Nominal: 1,
+        Name: "Российский рубль",
+        Value: 1,
+        Previous: 1,
+      };
+      console.log(data);
       context.commit("SET_RATES", data);
     },
   },
-  modules: {}
-})
+  modules: {},
+});
