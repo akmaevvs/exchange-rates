@@ -2,5 +2,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import store from './store'
+import axios from 'axios'
+import './css/tailwind.css'
 
-createApp(App).use(store).mount('#app')
+
+let app;
+
+if (!app) {
+  app = createApp(App).use(store);
+  app.config.globalProperties.$axios = axios;
+  app.mount("#app");
+}
